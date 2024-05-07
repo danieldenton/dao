@@ -14,4 +14,6 @@ contract DAO {
         token = _token;
         quorum = _quorum;
     }
+
+    receive() external payable {}
 }
