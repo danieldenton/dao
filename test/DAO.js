@@ -52,7 +52,26 @@ describe("DAO", () => {
       it("updates proposal count", async () => {
         expect(await dao.proposalCount()).to.eq(1);
       });
+      it("updates proposal mapping", async () => {
+        const proposal = await dao.proposals(1);
+        expect(proposal.id).to.eq(1);
+        expect(proposal.amount).to.eq(ether(100));
+        expect(proposal.recipient).to.eq(recipient.address);
+      });
+      it("emits propse event", async () => {
+        await expect(transaction)
+          .to.emit(dao, "Propose")
+          .withArgs(1, ether(100), recipient.address, investor1.address);
+      });
     });
-    describe("Failure", () => {});
+    describe("Failure", () => {
+      it("rejects invalid amount", async () => {
+        await expect(
+          dao
+            .connect(investor1)
+            .createProposal("Propsal 1", ether(1000), recipient.address)
+        ).to.be.reverted;
+      });
+    });
   });
 });

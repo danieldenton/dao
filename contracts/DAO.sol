@@ -21,6 +21,8 @@ contract DAO {
     uint256 public proposalCount;
     mapping(uint256 => Proposal) public proposals;
 
+    event Propose(uint id, uint256 amount, address recipient, address creator);
+
     constructor(Token _token, uint256 _quorum) {
         owner = msg.sender;
         token = _token;
@@ -35,6 +37,8 @@ contract DAO {
         uint256 _amount,
         address payable _recipient
     ) external {
+        require(address(this).balance >= _amount);
+
         proposalCount++;
 
         proposals[proposalCount] = Proposal(
@@ -45,5 +49,7 @@ contract DAO {
             0,
             false
         );
+
+        emit Propose(proposalCount, _amount, _recipient, msg.sender);
     }
 }
