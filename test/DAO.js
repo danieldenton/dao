@@ -115,7 +115,52 @@ describe("DAO", () => {
             .createProposal("Propsal 1", ether(100), recipient.address)
         ).to.be.reverted;
       });
-      it("", async () => {})
+    });
+  });
+  describe("Voting", () => {
+    let transaction, result;
+    beforeEach(async () => {
+      transaction = await dao
+        .connect(investor1)
+        .createProposal("Proposal 1", ether(100), recipient.address);
+      result = await transaction.wait();
+    });
+    describe("Success", () => {
+      beforeEach(async () => {
+        transaction = await dao.connect(investor1).vote(1);
+        result = await transaction.wait();
+      });
+      it("updates vote count", async () => {
+        const proposal = await dao.proposals(1);
+        expect(proposal.votes).to.eq(tokens(200000));
+      });
+
+      //   it("updates proposal mapping", async () => {
+      //     const proposal = await dao.proposals(1);
+      //     expect(proposal.id).to.eq(1);
+      //     expect(proposal.amount).to.eq(ether(100));
+      //     expect(proposal.recipient).to.eq(recipient.address);
+      //   });
+      //   it("emits propse event", async () => {
+      //     await expect(transaction)
+      //       .to.emit(dao, "Propose")
+      //       .withArgs(1, ether(100), recipient.address, investor1.address);
+      //   });
+    });
+    describe("Failure", () => {
+      //   it("rejects invalid amount", async () => {
+      //     await expect(
+      //       dao
+      //         .connect(investor1)
+      //         .createProposal("Propsal 1", ether(1000), recipient.address)
+      //     ).to.be.reverted;
+      //   });
+      //   it("rejects non-investaor", async () => {
+      //     await expect(
+      //       dao
+      //         .connect(user)
+      //         .createProposal("Propsal 1", ether(100), recipient.address)
+      //     ).to.be.reverted;
     });
   });
 });
