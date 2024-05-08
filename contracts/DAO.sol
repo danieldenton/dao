@@ -9,7 +9,7 @@ contract DAO {
     Token public token;
     uint256 public quorum;
 
-     struct Proposal {
+    struct Proposal {
         uint256 id;
         string name;
         uint256 amount;
@@ -18,7 +18,8 @@ contract DAO {
         bool finalized;
     }
 
-    uint256 proposalCount;
+    uint256 public proposalCount;
+    mapping(uint256 => Proposal) public proposals;
 
     constructor(Token _token, uint256 _quorum) {
         owner = msg.sender;
@@ -29,14 +30,20 @@ contract DAO {
     // external can only be called outside the contract. public could be called in or out.
     receive() external payable {}
 
-   
-
     function createProposal(
         string memory _name,
         uint256 _amount,
         address payable _recipient
     ) external {
         proposalCount++;
-        Proposal(proposalCount, _name, _amount, _recipient, 0, false);
+
+        proposals[proposalCount] = Proposal(
+            proposalCount,
+            _name,
+            _amount,
+            _recipient,
+            0,
+            false
+        );
     }
 }

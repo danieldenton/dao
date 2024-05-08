@@ -15,6 +15,8 @@ describe("DAO", () => {
     let accounts = await ethers.getSigners();
     deployer = accounts[0];
     funder = accounts[1];
+    investor1 = accounts[2];
+    recipient = accounts[3];
 
     const Token = await ethers.getContractFactory("Token");
     token = await Token.deploy("Rumpelina", "RUMP", "1000000");
@@ -37,5 +39,20 @@ describe("DAO", () => {
     it("returns quorum", async () => {
       expect(await dao.quorum()).to.equal("500000000000000000000001");
     });
+  });
+  describe("Proposal Creation", () => {
+    let transaction, result;
+    describe("Success", () => {
+      beforeEach(async () => {
+        transaction = await dao
+          .connect(investor1)
+          .createProposal("Proposal 1", ether(100), recipient.address);
+        result = await transaction.wait();
+      });
+      it("updates proposal count", async () => {
+        expect(await dao.proposalCount()).to.eq(1);
+      });
+    });
+    describe("Failure", () => {});
   });
 });
