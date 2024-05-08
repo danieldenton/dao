@@ -29,7 +29,7 @@ contract DAO {
         quorum = _quorum;
     }
 
-    // external can only be called outside the contract. public could be called in or out.
+    // External can only be called outside the contract. Public could be called in or out.
     receive() external payable {}
 
     function createProposal(
@@ -38,6 +38,7 @@ contract DAO {
         address payable _recipient
     ) external {
         require(address(this).balance >= _amount);
+        require(Token(token).balanceOf(msg.sender) > 0, "must be token holder");
 
         proposalCount++;
 
