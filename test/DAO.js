@@ -152,4 +152,33 @@ describe("DAO", () => {
     });
     //   it("", async () => {});
   });
+  describe("Governance", () => {
+    let transaction, result;
+    beforeEach(async () => {});
+    describe("Success", () => {
+      beforeEach(async () => {
+        transaction = await dao
+          .connect(investor1)
+          .createProposal("Proposal 1", ether(100), recipient.address);
+        result = await transaction.wait();
+
+        transaction = await dao.connect(investor1).vote(1);
+        result = await transaction.wait();
+        transaction = await dao.connect(investor2).vote(1);
+        result = await transaction.wait();
+        transaction = await dao.connect(investor3).vote(1);
+        result = await transaction.wait();
+
+        transaction = await dao.connect(investor1).finalizeProposal(1);
+        result = await transaction.wait();
+      });
+      it("updates the proposal to finalized", async () => {
+        const proposal = await dao.proposals(1);
+        expect(proposal.finalized).to.equal(true);
+      });
+    });
+    describe("Failure", () => {
+      it("", async () => {});
+    });
+  });
 });

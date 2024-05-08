@@ -20,6 +20,7 @@ contract DAO {
 
     uint256 public proposalCount;
     mapping(uint256 => Proposal) public proposals;
+    mapping(address => mapping(uint256 => bool)) votes;
 
     event Propose(uint id, uint256 amount, address recipient, address creator);
 
@@ -60,8 +61,6 @@ contract DAO {
         emit Propose(proposalCount, _amount, _recipient, msg.sender);
     }
 
-    mapping(address => mapping(uint256 => bool)) votes;
-
     function vote(uint256 _id) external onlyInvestor {
         Proposal storage proposal = proposals[_id];
 
@@ -72,5 +71,11 @@ contract DAO {
         votes[msg.sender][_id] = true;
 
         emit Vote(_id, msg.sender);
+    }
+
+    function finalizeProposal(uint _id) external onlyInvestor {
+        Proposal storage proposal = proposals[_id];
+        // require(proposal.votes >= token.totalSupply / 2);
+        proposal.finalized = true;
     }
 }
