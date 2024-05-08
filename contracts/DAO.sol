@@ -32,13 +32,17 @@ contract DAO {
     // External can only be called outside the contract. Public could be called in or out.
     receive() external payable {}
 
+    modifier onlyInvestor() {
+        require(Token(token).balanceOf(msg.sender) > 0, "must be token holder");
+        _;
+    }
+
     function createProposal(
         string memory _name,
         uint256 _amount,
         address payable _recipient
-    ) external {
+    ) external onlyInvestor {
         require(address(this).balance >= _amount);
-        require(Token(token).balanceOf(msg.sender) > 0, "must be token holder");
 
         proposalCount++;
 

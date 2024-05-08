@@ -108,6 +108,14 @@ describe("DAO", () => {
             .createProposal("Propsal 1", ether(1000), recipient.address)
         ).to.be.reverted;
       });
+      it("rejects non-investaor", async () => {
+        await expect(
+          dao
+            .connect(user)
+            .createProposal("Propsal 1", ether(100), recipient.address)
+        ).to.be.reverted;
+      });
+      it("", async () => {})
     });
   });
 });
