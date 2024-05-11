@@ -1,4 +1,5 @@
 const hre = require("hardhat");
+const config = require("../src/config.json");
 
 const tokens = (n) => {
   return hre.ethers.utils.parseUnits(n.toString(), "ether");
@@ -19,11 +20,14 @@ async function main() {
   user = accounts[8];
 
   let transaction;
+
+  const { chainId } = await hre.ethers.provider.getNetwork();
+
   console.log(`Fetching % token and transferring to accounts...\n`);
 
   const token = await hre.ethers.getContractAt(
     "Token",
-    "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+    config[chainId].token.address
   );
   console.log(`Token fetched at ${token.address}\n`);
 
@@ -37,7 +41,7 @@ async function main() {
   console.log("Fetching DAO...");
   const dao = await hre.ethers.getContractAt(
     "DAO",
-    "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+    config[chainId].dao.address
   );
   console.log(`DAO fetched at ${dao.address}\n`);
 
@@ -72,12 +76,12 @@ async function main() {
     .createProposal(`Proposal 4`, ether(100), recipient.address);
   await transaction.wait();
 
-  transaction = await dao.connect(investor1).vote(i + 1);
+  transaction = await dao.connect(investor1).vote(4);
   await transaction.wait();
-  transaction = await dao.connect(investor2).vote(i + 1);
+  transaction = await dao.connect(investor2).vote(4);
   await transaction.wait();
 
-  console.log("Finished")
+  console.log("Finished");
 }
 
 main().catch((error) => {
