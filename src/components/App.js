@@ -44,6 +44,16 @@ function App() {
     const account = ethers.utils.getAddress(accounts[0]);
     setAccount(account);
 
+    const count = await dao.proposalCount()
+    const items = []
+
+    for(let i = 0; i < count; i++) {
+      const proposal = await dao.proposals(i + 1)
+      items.push(proposal)
+    }
+
+    console.log(items)
+
     setIsLoading(false);
   };
 
