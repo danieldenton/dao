@@ -3,8 +3,19 @@ import Button from "react-bootstrap/Button";
 import { ethers } from "ethers";
 
 const Proposals = ({ provider, dao, proposals, quorum, setIsLoading }) => {
+  const handleVote = async (id) => {
+    try {
+      const signer = await provider.getSigner();
+      const transaction = await dao.connect(signer).vote(id);
+      await transaction.wait();
+
+      setIsLoading(true);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
-    <Table striped border hover responsive>
+    <Table striped bordered hover responsive>
       <thead>
         <tr>
           <th>#</th>
@@ -26,10 +37,22 @@ const Proposals = ({ provider, dao, proposals, quorum, setIsLoading }) => {
             <td>{ethers.utils.formatUnits(proposal.amount, "ether")} ETH</td>
             <td>{proposal.finalized ? "Approved" : "In Progress"}</td>
             <td>{proposal.votes.toString()}</td>
-            <td>{!proposal.finalized ? <Button>Vote</Button> : null}</td>
+            <td>
+              {!proposal.finalized ? (
+                <Button
+                  onClick={() => handleVote(proposal.id)}
+                  variant="primary"
+                  style={{ width: "100%" }}
+                >
+                  Vote
+                </Button>
+              ) : null}
+            </td>
             <td>
               {!proposal.finalized && proposal.votes > quorum ? (
-                <Button>Finalize</Button>
+                <Button variant="primary" style={{ width: "100%" }}>
+                  Finalize
+                </Button>
               ) : null}
             </td>
           </tr>
