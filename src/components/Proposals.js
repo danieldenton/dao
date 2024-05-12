@@ -26,11 +26,11 @@ const Proposals = ({ provider, dao, proposals, quorum, setIsLoading }) => {
             <td>{ethers.utils.formatUnits(proposal.amount, "ether")} ETH</td>
             <td>{proposal.finalized ? "Approved" : "In Progress"}</td>
             <td>{proposal.votes.toString()}</td>
+            <td>{!proposal.finalized ? <Button>Vote</Button> : null}</td>
             <td>
-              <Button>Vote</Button>
-            </td>
-            <td>
-              <Button>Finalize</Button>
+              {!proposal.finalized && proposal.votes > quorum ? (
+                <Button>Finalize</Button>
+              ) : null}
             </td>
           </tr>
         ))}
