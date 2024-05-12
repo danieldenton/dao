@@ -5,6 +5,7 @@ import { ethers } from "ethers";
 // Components
 import Navigation from "./Navigation";
 import Loading from "./Loading";
+import Proposals from "./Proposals";
 
 // ABIs: Import your contract ABIs here
 import TOKEN_ABI from "../abis/Token.json";
@@ -21,7 +22,7 @@ function App() {
   const [account, setAccount] = useState(null);
 
   const [proposals, setProposals] = useState(null);
-  const [quorum, setQuorum] = useState(null)
+  const [quorum, setQuorum] = useState(null);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -59,7 +60,7 @@ function App() {
     }
     setProposals(items);
 
-    setQuorum(await dao.quorum())
+    setQuorum(await dao.quorum());
 
     setIsLoading(false);
   };
@@ -80,10 +81,19 @@ function App() {
         <Loading />
       ) : (
         <>
+          <hr />
           <p className="text-center">
             <strong>Treasury Balance: </strong>
             {treasuryBalance} ETH
           </p>
+          <hr />
+          <Proposals
+            provider={provider}
+            dao={dao}
+            proposals={proposals}
+            quorum={quorum}
+            setIsLoading={setIsLoading}
+          />
         </>
       )}
     </Container>
