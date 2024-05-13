@@ -9,15 +9,11 @@ const ether = tokens;
 
 async function main() {
   const accounts = await hre.ethers.getSigners();
-  deployer = accounts[0];
-  funder = accounts[1];
-  investor1 = accounts[2];
-  investor2 = accounts[3];
-  investor3 = accounts[4];
-  investor4 = accounts[5];
-  investor5 = accounts[6];
-  recipient = accounts[7];
-  user = accounts[8];
+  funder = accounts[0];
+  investor1 = accounts[1];
+  investor2 = accounts[2];
+  investor3 = accounts[3];
+  recipient = accounts[4];
 
   let transaction;
 

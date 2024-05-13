@@ -12,6 +12,19 @@ const Proposals = ({ provider, dao, proposals, quorum, setIsLoading }) => {
       setIsLoading(true);
     } catch (err) {
       console.log(err);
+      window.alert("User rejected or transaction reverted")
+    }
+  };
+  const handleFinalize = async (id) => {
+    try {
+      const signer = await provider.getSigner();
+      const transaction = await dao.connect(signer).finalizeProposal(id);
+      await transaction.wait();
+
+      setIsLoading(true);
+    } catch (err) {
+      console.log(err);
+      window.alert("User rejected or transaction reverted")
     }
   };
   return (
@@ -50,7 +63,7 @@ const Proposals = ({ provider, dao, proposals, quorum, setIsLoading }) => {
             </td>
             <td>
               {!proposal.finalized && proposal.votes > quorum ? (
-                <Button variant="primary" style={{ width: "100%" }}>
+                <Button onClick={() => handleFinalize(proposal.id)} variant="primary" style={{ width: "100%" }}>
                   Finalize
                 </Button>
               ) : null}
